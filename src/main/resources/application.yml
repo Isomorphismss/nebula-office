@@ -62,3 +62,6 @@ emos:
     expire: 5
     cache-expire: 10
 
+wx:
+  app-id: REDACTED
+  app-secret: REDACTED
