@@ -4,6 +4,7 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.example.emos.wx.db.dao.TbUserDao;
+import com.example.emos.wx.exception.EmosException;
 import com.example.emos.wx.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 
 @Service
@@ -25,7 +27,7 @@ public class UserServiceImpl implements UserService {
     private String appSecret;
 
     @Autowired
-    private TbUserDao tbUserDao;
+    private TbUserDao userDao;
 
     private String getOpenId(String code) {
         String url = "https://api.weixin.qq.com/sns/jscode2session";
@@ -41,6 +43,33 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("临时登陆凭证错误");
         }
         return openId;
+    }
+
+    @Override
+    public int registerUser(String registerCode, String code, String nickname, String photo) {
+        if (registerCode.equals("000000")) {
+            boolean bool = userDao.haveRootUser();
+            if (!bool) {
+                String openId = getOpenId(code);
+                HashMap param = new HashMap();
+                param.put("openid", openId);
+                param.put("nickname", nickname);
+                param.put("photo", photo);
+                param.put("role", "[0]");
+                param.put("status", 1);
+                param.put("createTime", new Date());
+                param.put("root", true);
+                userDao.insert(param);
+                int id = userDao.searchIdByOpenId(openId);
+                return id;
+            } else {
+                throw new EmosException("无法绑定超级管理员账号");
+            }
+        }
+        // TODO 还有别的判断内容
+        else {
+            return 0;
+        }
     }
 
 }
