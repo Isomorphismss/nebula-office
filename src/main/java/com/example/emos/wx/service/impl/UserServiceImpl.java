@@ -43,6 +43,7 @@ public class UserServiceImpl implements UserService {
         if (openId == null || openId.length() == 0) {
             throw new RuntimeException("临时登陆凭证错误");
         }
+        System.out.println("!!!!!!!!!!openId:" + openId);
         return openId;
     }
 
@@ -53,7 +54,7 @@ public class UserServiceImpl implements UserService {
             if (!bool) {
                 String openId = getOpenId(code);
                 HashMap param = new HashMap();
-                param.put("openid", openId);
+                param.put("openId", openId);
                 param.put("nickname", nickname);
                 param.put("photo", photo);
                 param.put("role", "[0]");
