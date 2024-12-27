@@ -8,4 +8,6 @@ public interface UserService {
 
     public Set<String> searchUserPermissions(int userId);
 
+    public Integer login(String code);
+
 }
