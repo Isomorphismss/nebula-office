@@ -52,5 +52,4 @@ public class OAuth2Realm extends AuthorizingRealm {
         return info;
     }
 
-
 }
