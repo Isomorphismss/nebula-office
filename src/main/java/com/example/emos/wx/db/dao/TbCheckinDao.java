@@ -10,4 +10,6 @@ public interface TbCheckinDao {
 
     public Integer haveCheckin(HashMap param);
 
+    public void insert(TbCheckin entity);
+
 }
