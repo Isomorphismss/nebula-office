@@ -8,4 +8,6 @@ public interface CheckinService {
 
     public void checkin(HashMap param);
 
+    public void createFaceModel(int userId, String path);
+
 }
