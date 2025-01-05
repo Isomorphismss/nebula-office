@@ -138,7 +138,7 @@ public class CheckinServiceImpl implements CheckinService {
                 System.out.println("人脸匹配通过，开始执行签到！");
 
                 HashMap<String, String> map = userDao.searchNameAndDept(userId);
-                String name = map.get("nickname");
+                String name = map.get("name");
                 String deptName = map.get("dept_name");
                 deptName = deptName != null ? deptName : "";
                 SimpleMailMessage message = new SimpleMailMessage();
