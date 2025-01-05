@@ -10,6 +10,7 @@ import lombok.Data;
  */
 @Data
 public class TbCheckin implements Serializable {
+
     private Integer id;
 
     private Integer userId;
@@ -28,9 +29,10 @@ public class TbCheckin implements Serializable {
 
     private Integer risk;
 
-    private Date date;
+    private String date;
 
     private Date createTime;
 
     private static final long serialVersionUID = 1L;
+
 }
