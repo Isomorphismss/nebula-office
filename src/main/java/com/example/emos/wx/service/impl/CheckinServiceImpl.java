@@ -7,16 +7,17 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import com.example.emos.wx.config.SystemConstants;
-import com.example.emos.wx.db.dao.TbCheckinDao;
-import com.example.emos.wx.db.dao.TbFaceModelDao;
-import com.example.emos.wx.db.dao.TbHolidaysDao;
-import com.example.emos.wx.db.dao.TbWorkdayDao;
+import com.example.emos.wx.db.dao.*;
+import com.example.emos.wx.db.pojo.TbCheckin;
+import com.example.emos.wx.db.pojo.TbFaceModel;
 import com.example.emos.wx.exception.EmosException;
 import com.example.emos.wx.service.CheckinService;
+import com.example.emos.wx.task.EmailTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -42,11 +43,23 @@ public class CheckinServiceImpl implements CheckinService {
     @Autowired
     private TbFaceModelDao faceModelDao;
 
+    @Autowired
+    private TbUserDao userDao;
+
     @Value("${emos.face.createFaceModelUrl}")
     private String createFaceModelUrl;
 
     @Value("${emos.face.checkinUrl}")
     private String checkinUrl;
+
+    @Value("${emos.email.hr}")
+    private String hrEmail;
+
+    @Value("${emos.code}")
+    private String code;
+
+    @Autowired
+    private EmailTask emailTask;
 
     @Override
     public String validCanCheckIn(int userId, String date) {
@@ -88,6 +101,7 @@ public class CheckinServiceImpl implements CheckinService {
 
     @Override
     public void checkin(HashMap param) {
+        System.out.println("服务层checkin函数已被调用");
         //判断签到
         Date d1 = DateUtil.date();  //当前时间
         Date d2 = DateUtil.parse(DateUtil.today() + " " + systemConstants.attendanceTime);  //上班时间
@@ -107,6 +121,7 @@ public class CheckinServiceImpl implements CheckinService {
             String path=(String)param.get("path");
             HttpRequest request = HttpUtil.createPost(checkinUrl);
             request.form("photo", FileUtil.file(path), "targetModel", faceModel);
+            request.form("code", code);
             HttpResponse response = request.execute();
             if (response.getStatus() != 200) {
                 log.error("人脸识别服务异常");
@@ -118,9 +133,58 @@ public class CheckinServiceImpl implements CheckinService {
             } else if ("False".equals(body)) {
                 throw new EmosException("签到无效，非本人签到");
             } else if ("True".equals(body)) {
-                //TODO 这里要获取签到地区新冠疫情风险等级
-                //TODO 保存签到记录
+                // 保存签到记录
+                String address = (String) param.get("address");
+                System.out.println("人脸匹配通过，开始执行签到！");
+
+                HashMap<String, String> map = userDao.searchNameAndDept(userId);
+                String name = map.get("nickname");
+                String deptName = map.get("dept_name");
+                deptName = deptName != null ? deptName : "";
+                SimpleMailMessage message = new SimpleMailMessage();
+                message.setTo(hrEmail);
+                message.setSubject("员工" + name + "签到成功！");
+                message.setText(deptName + "员工" + name + "，" + DateUtil.format(new Date(), "yyyy年MM月dd日") + "处于" + address + "，签到成功！");
+                emailTask.sendAsync(message);
+                System.out.println("签到邮件发送成功！");
+
+                int risk = 1;
+                TbCheckin entity = new TbCheckin();
+                String country = (String) param.get("country");
+                String province = (String) param.get("province");
+                String city = (String) param.get("city");
+                String district = (String) param.get("district");
+                entity.setUserId(userId);
+                entity.setAddress(address);
+                entity.setCountry(country);
+                entity.setProvince(province);
+                entity.setCity(city);
+                entity.setDistrict(district);
+                entity.setStatus((byte) status);
+                entity.setDate(DateUtil.today());
+                entity.setCreateTime(d1);
+                entity.setRisk(risk);
+                checkinDao.insert(entity);
+                System.out.println("签到数据存入数据库成功！");
             }
+        }
+    }
+
+    @Override
+    public void createFaceModel(int userId, String path) {
+        System.out.println("服务层createFaceModel函数已被调用");
+        HttpRequest request = HttpUtil.createPost(createFaceModelUrl);
+        request.form("photo", FileUtil.file(path));
+        request.form("code", code);
+        HttpResponse response = request.execute();
+        String body = response.body();
+        if ("无法识别出人脸".equals(body) || "照片中存在多张人脸".equals(body)) {
+            throw new EmosException(body);
+        } else {
+            TbFaceModel entity = new TbFaceModel();
+            entity.setUserId(userId);
+            entity.setFaceModel(body);
+            faceModelDao.insert(entity);
         }
     }
 
