@@ -42,6 +42,19 @@ spring:
       port: REDACTED
       database: REDACTED
 
+  mail:
+    host: REDACTED
+    REDACTED
+    username: REDACTED
+    password: REDACTED
+    protocol: smtps
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+    default-encoding: UTF-8
+
 mybatis:
   mapper-locations: classpath*:mapper/*.xml
   type-aliases-package: com.example.emos.wx.db.pojo
@@ -64,6 +77,11 @@ emos:
   face:
     createFaceModelUrl: ${ENV}
     checkinUrl: ${ENV}
+  email:
+    system: REDACTED
+    hr: REDACTED
+  image-folder: REDACTED
+  code: REDACTED
 
 wx:
   app-id: REDACTED
