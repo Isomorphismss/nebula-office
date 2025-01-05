@@ -49,6 +49,7 @@ public class UserController {
     @PostMapping("/login")
     @ApiOperation("登录系统")
     public R login(@Valid @RequestBody LoginForm form) {
+        System.out.println("视图层login函数已被调用");
         int id = userService.login(form.getCode());
         String token = jwtUtil.createToken(id);
         saveCacheToken(token, id);

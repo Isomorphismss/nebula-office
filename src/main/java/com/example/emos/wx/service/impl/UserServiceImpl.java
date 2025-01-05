@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private TbUserDao userDao;
 
     private String getOpenId(String code) {
+        System.out.println("服务层getOpenId函数已被调用, 取得的临时授权码为：" + code);
         String url = "https://api.weixin.qq.com/sns/jscode2session";
         HashMap map = new HashMap();
         map.put("appid", appId);
@@ -44,7 +45,7 @@ public class UserServiceImpl implements UserService {
         if (openId == null || openId.length() == 0) {
             throw new RuntimeException("临时登陆凭证错误");
         }
-        System.out.println("!!!!!!!!!!openId:" + openId);
+        System.out.println("已获取openId:" + openId);
         return openId;
     }
 
@@ -83,6 +84,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Integer login(String code) {
+        System.out.println("服务层login函数已被调用");
         String openId = getOpenId(code);
         Integer id = userDao.searchIdByOpenId(openId);
         if (id == null) {
