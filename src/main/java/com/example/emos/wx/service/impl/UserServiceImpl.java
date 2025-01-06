@@ -106,4 +106,10 @@ public class UserServiceImpl implements UserService {
         return hiredate;
     }
 
+    @Override
+    public HashMap searchUserSummary(int userId) {
+        HashMap map = userDao.searchUserSummary(userId);
+        return map;
+    }
+
 }
