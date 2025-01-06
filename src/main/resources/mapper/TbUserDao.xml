@@ -66,4 +66,8 @@
         WHERE u.id = #{userId} AND u.status = 1
     </select>
 
+    <select id="searchUserHiredate" parameterType="int" resultType="String">
+        SELECT hiredate FROM tb_user WHERE id=#{userId} AND status = 1
+    </select>
+
 </mapper>
