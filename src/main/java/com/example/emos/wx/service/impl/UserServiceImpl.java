@@ -100,4 +100,10 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Override
+    public String searchUserHiredate(int userId) {
+        String hiredate = userDao.searchUserHiredate(userId);
+        return hiredate;
+    }
+
 }
