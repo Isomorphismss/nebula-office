@@ -23,4 +23,6 @@ public interface TbUserDao {
 
     public String searchUserHiredate(int userId);
 
+    public HashMap searchUserSummary(int userId);
+
 }
