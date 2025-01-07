@@ -17,4 +17,6 @@ public interface CheckinService {
 
     public ArrayList<HashMap> searchWeekCheckin(HashMap param);
 
+    public ArrayList<HashMap> searchMonthCheckin(HashMap param);
+
 }
