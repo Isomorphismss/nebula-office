@@ -4,6 +4,7 @@ import com.example.emos.wx.common.util.R;
 import com.example.emos.wx.config.shiro.JwtUtil;
 import com.example.emos.wx.controller.form.SearchMessageByIdForm;
 import com.example.emos.wx.controller.form.SearchMessageByPageForm;
+import com.example.emos.wx.controller.form.UpdateUnreadMessageForm;
 import com.example.emos.wx.service.MessageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -40,6 +41,13 @@ public class MessageController {
     public R searchMessageById(@Valid @RequestBody SearchMessageByIdForm form) {
         HashMap map = messageService.searchMessageById(form.getId());
         return R.ok().put("result", map);
+    }
+
+    @PostMapping("/updateUnreadMessage")
+    @ApiOperation("未读消息更新成已读消息")
+    public R updateUnreadMessage(@Valid @RequestBody UpdateUnreadMessageForm form) {
+        long rows = messageService.updateUnreadMessage(form.getId());
+        return R.ok().put("result", rows == 1 ? true : false);
     }
 
 }
