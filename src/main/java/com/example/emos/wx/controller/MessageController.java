@@ -2,9 +2,11 @@ package com.example.emos.wx.controller;
 
 import com.example.emos.wx.common.util.R;
 import com.example.emos.wx.config.shiro.JwtUtil;
+import com.example.emos.wx.controller.form.SearchMessageByIdForm;
 import com.example.emos.wx.controller.form.SearchMessageByPageForm;
 import com.example.emos.wx.service.MessageService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +33,13 @@ public class MessageController {
         long start = (long) (page - 1) * length;
         List<HashMap> list = messageService.searchMessageByPage(userId, start, length);
         return R.ok().put("result", list);
+    }
+
+    @PostMapping("/searchMessageById")
+    @ApiOperation("根据ID查询消息")
+    public R searchMessageById(@Valid @RequestBody SearchMessageByIdForm form) {
+        HashMap map = messageService.searchMessageById(form.getId());
+        return R.ok().put("result", map);
     }
 
 }
