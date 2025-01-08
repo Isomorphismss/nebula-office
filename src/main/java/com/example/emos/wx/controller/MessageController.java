@@ -2,6 +2,7 @@ package com.example.emos.wx.controller;
 
 import com.example.emos.wx.common.util.R;
 import com.example.emos.wx.config.shiro.JwtUtil;
+import com.example.emos.wx.controller.form.DeleteMessageRefByIdForm;
 import com.example.emos.wx.controller.form.SearchMessageByIdForm;
 import com.example.emos.wx.controller.form.SearchMessageByPageForm;
 import com.example.emos.wx.controller.form.UpdateUnreadMessageForm;
@@ -47,6 +48,13 @@ public class MessageController {
     @ApiOperation("未读消息更新成已读消息")
     public R updateUnreadMessage(@Valid @RequestBody UpdateUnreadMessageForm form) {
         long rows = messageService.updateUnreadMessage(form.getId());
+        return R.ok().put("result", rows == 1 ? true : false);
+    }
+
+    @PostMapping("/deleteMessageRefById")
+    @ApiOperation("删除消息")
+    public R deleteMessageRefById(@Valid @RequestBody DeleteMessageRefByIdForm form){
+        long rows=messageService.deleteMessageRefById(form.getId());
         return R.ok().put("result", rows == 1 ? true : false);
     }
 
