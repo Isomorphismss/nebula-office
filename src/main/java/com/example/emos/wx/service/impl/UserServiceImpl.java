@@ -1,12 +1,15 @@
 package com.example.emos.wx.service.impl;
 
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.example.emos.wx.db.dao.TbUserDao;
+import com.example.emos.wx.db.pojo.MessageEntity;
 import com.example.emos.wx.db.pojo.TbUser;
 import com.example.emos.wx.exception.EmosException;
 import com.example.emos.wx.service.UserService;
+import com.example.emos.wx.task.MessageTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +33,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private TbUserDao userDao;
+
+    @Autowired
+    private MessageTask messageTask;
 
     private String getOpenId(String code) {
         System.out.println("服务层getOpenId函数已被调用, 取得的临时授权码为：" + code);
@@ -65,6 +71,15 @@ public class UserServiceImpl implements UserService {
                 param.put("root", true);
                 userDao.insert(param);
                 int id = userDao.searchIdByOpenId(openId);
+
+                MessageEntity entity = new MessageEntity();
+                entity.setSenderId(0);
+                entity.setSenderName("系统消息");
+                entity.setUuid(IdUtil.simpleUUID());
+                entity.setMsg("欢迎您注册成为超级管理员，请及时更新你的员工个人信息。");
+                entity.setSendTime(new Date());
+                messageTask.sendAsync(id + "", entity);
+
                 return id;
             } else {
                 throw new EmosException("无法绑定超级管理员账号");
