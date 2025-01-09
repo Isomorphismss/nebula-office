@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -37,9 +38,9 @@ public class MessageDao {
         Aggregation aggregation = Aggregation.newAggregation(
                 Aggregation.addFields().addField("id").withValue(json).build(),
                 Aggregation.lookup("message_ref", "id", "messageId", "ref"),
-                //Aggregation.match(Criteria.where("ref.receiverId").is(userId)),
-                Aggregation.project("id", "msg", "sendTime","senderId","senderName","senderPhoto","uuid")
-                        .and(item-> Document.parse("{$filter:{input:\"$ref\",as:\"item\",cond:{$eq:[\"$$item.receiverId\","+userId+"]}}}")).as("ref"),
+                Aggregation.match(Criteria.where("ref.receiverId").is(userId)),
+//                Aggregation.project("id", "msg", "sendTime","senderId","senderName","senderPhoto","uuid")
+//                        .and(item-> Document.parse("{$filter:{input:\"$ref\",as:\"item\",cond:{$eq:[\"$$item.receiverId\","+userId+"]}}}")).as("ref"),
                 Aggregation.sort(Sort.by(Sort.Direction.DESC, "sendTime")),
                 Aggregation.skip(start),
                 Aggregation.limit(length)
