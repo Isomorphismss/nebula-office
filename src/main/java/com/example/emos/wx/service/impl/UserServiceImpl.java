@@ -4,6 +4,7 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.example.emos.wx.db.dao.TbDeptDao;
 import com.example.emos.wx.db.dao.TbUserDao;
 import com.example.emos.wx.db.pojo.MessageEntity;
 import com.example.emos.wx.db.pojo.TbUser;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
@@ -36,6 +38,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private MessageTask messageTask;
+
+    @Autowired
+    private TbDeptDao deptDao;
 
     private String getOpenId(String code) {
         System.out.println("服务层getOpenId函数已被调用, 取得的临时授权码为：" + code);
@@ -126,6 +131,24 @@ public class UserServiceImpl implements UserService {
     public HashMap searchUserSummary(int userId) {
         HashMap map = userDao.searchUserSummary(userId);
         return map;
+    }
+
+    @Override
+    public ArrayList<HashMap> searchUserGroupByDept(String keyword) {
+        ArrayList<HashMap> list_1 = deptDao.searchDeptMembers(keyword);
+        ArrayList<HashMap> list_2 = userDao.searchUserGroupByDept(keyword);
+        for (HashMap map_1 : list_1) {
+            long deptId = (Long) map_1.get("id");
+            ArrayList members = new ArrayList();
+            for (HashMap map_2 : list_2) {
+                long id = (Long) map_2.get("deptId");
+                if (deptId == id) {
+                    members.add(map_2);
+                }
+            }
+            map_1.put("members", members);
+        }
+        return list_1;
     }
 
 }
