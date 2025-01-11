@@ -55,7 +55,7 @@ class EmosWxApiApplicationTests {
             meeting.setStart("08:30");
             meeting.setEnd("10:30");
             meeting.setType((short) 1);
-            meeting.setMembers("[15,16]");
+            meeting.setMembers("[11,16]");
             meeting.setDesc("会议研讨Emos项目上线测试");
             meeting.setInstanceId(IdUtil.simpleUUID());
             meeting.setStatus((short)3);
