@@ -18,13 +18,13 @@ public class TbMeeting implements Serializable {
 
     private Long creatorId;
 
-    private Date date;
+    private String date;
 
     private String place;
 
-    private Date start;
+    private String start;
 
-    private Date end;
+    private String end;
 
     private Short type;
 
