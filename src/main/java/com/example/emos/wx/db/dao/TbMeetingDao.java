@@ -5,15 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface TbMeetingDao {
-    int deleteByPrimaryKey(Long id);
 
-    int insert(TbMeeting record);
+    public int insertMeeting(TbMeeting entity);
 
-    int insertSelective(TbMeeting record);
-
-    TbMeeting selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(TbMeeting record);
-
-    int updateByPrimaryKey(TbMeeting record);
 }
