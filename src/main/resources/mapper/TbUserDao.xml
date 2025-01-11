@@ -76,4 +76,18 @@
         WHERE u.id=#{userId} AND u.status = 1
     </select>
 
+    <select id="searchUserGroupByDept" parameterType="String" resultType="HashMap">
+        SELECT
+        d.id AS deptId,
+        d.dept_name AS deptName,
+        u.id AS userId,
+        u.name
+        FROM tb_dept d JOIN tb_user u ON u.dept_id=d.id
+        WHERE u.status=1
+        <if test="keyword!=null">
+            AND u.name LIKE '%${keyword}%'
+        </if>
+        ORDER BY d.id, u.id;
+    </select>
+
 </mapper>
