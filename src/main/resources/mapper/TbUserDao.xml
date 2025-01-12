@@ -90,4 +90,14 @@
         ORDER BY d.id, u.id;
     </select>
 
+    <select id="searchMembers" parameterType="list" resultType="HashMap">
+        SELECT id,name,photo
+        FROM tb_user
+        WHERE status = 1
+        AND id IN
+        <foreach collection="list" item="one" separator="," open="(" close=")">
+            #{one}
+        </foreach>
+    </select>
+
 </mapper>

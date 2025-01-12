@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 @Mapper
@@ -27,5 +28,7 @@ public interface TbUserDao {
     public HashMap searchUserSummary(int userId);
 
     public ArrayList<HashMap> searchUserGroupByDept(String keyword);
+
+    public ArrayList<HashMap> searchMembers(List param);
 
 }
