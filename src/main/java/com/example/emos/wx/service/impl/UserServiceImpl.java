@@ -17,10 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -149,6 +146,12 @@ public class UserServiceImpl implements UserService {
             map_1.put("members", members);
         }
         return list_1;
+    }
+
+    @Override
+    public ArrayList<HashMap> searchMembers(List param) {
+        ArrayList<HashMap> list = userDao.searchMembers(param);
+        return list;
     }
 
 }
