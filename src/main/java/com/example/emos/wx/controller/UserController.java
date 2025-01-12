@@ -1,10 +1,13 @@
 package com.example.emos.wx.controller;
 
+import cn.hutool.json.JSONUtil;
 import com.example.emos.wx.common.util.R;
 import com.example.emos.wx.config.shiro.JwtUtil;
 import com.example.emos.wx.controller.form.LoginForm;
 import com.example.emos.wx.controller.form.RegisterForm;
+import com.example.emos.wx.controller.form.SearchMembersForm;
 import com.example.emos.wx.controller.form.SearchUserGroupByDeptForm;
+import com.example.emos.wx.exception.EmosException;
 import com.example.emos.wx.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -72,6 +76,18 @@ public class UserController {
     @RequiresPermissions(value = {"ROOT", "EMPLOYEE:SELECT"}, logical = Logical.OR)
     public R searchUserGroupByDept(@Valid @RequestBody SearchUserGroupByDeptForm form) {
         ArrayList<HashMap> list = userService.searchUserGroupByDept(form.getKeyword());
+        return R.ok().put("result", list);
+    }
+
+    @PostMapping("/searchMembers")
+    @ApiOperation("查询成员")
+    @RequiresPermissions(value = {"ROOT", "MEETING:INSERT", "MEETING:UPDATE"}, logical = Logical.OR)
+    public R searchMembers(@Valid @RequestBody SearchMembersForm form) {
+        if (!JSONUtil.isJsonArray(form.getMembers())) {
+            throw new EmosException("members不是JSON数组");
+        }
+        List param = JSONUtil.parseArray(form.getMembers()).toList(Integer.class);
+        ArrayList list = userService.searchMembers(param);
         return R.ok().put("result", list);
     }
 
