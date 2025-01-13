@@ -17,4 +17,8 @@ public interface TbMeetingDao {
 
     public int updateMeetingInstanceId(HashMap map);
 
+    public HashMap searchMeetingById(int id);
+
+    public ArrayList<HashMap> searchMeetingMembers(int id);
+
 }

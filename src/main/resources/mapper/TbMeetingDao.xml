@@ -57,4 +57,33 @@
     SET instance_id=#{instanceId}
     WHERE uuid=#{uuid}
   </update>
+
+  <select id="searchMeetingById" parameterType="int" resultType="HashMap">
+    SELECT
+      m.uuid,
+      m.creator_id AS creatorId,
+      m.title,
+      u.name,
+      DATE_FORMAT( m.date, '%Y-%m-%d' ) AS date,
+      m.place,
+      DATE_FORMAT( m.START, '%H:%i' ) AS start,
+      DATE_FORMAT( m.END, '%H:%i' ) AS end,
+      m.type,
+      m.status,
+      m.desc,
+      m.instance_id AS instanceId
+    FROM tb_meeting m
+           JOIN tb_user u ON m.creator_id = u.id
+    WHERE m.id =#{id} AND u.status = 1
+  </select>
+
+  <select id="searchMeetingMembers" parameterType="int" resultType="HashMap">
+    SELECT
+      u.id,
+      u.name,
+      u.photo
+    FROM tb_meeting m
+           JOIN tb_user u ON JSON_CONTAINS ( m.members, CAST( u.id AS CHAR ) )
+    WHERE m.id=#{id} AND u.status = 1
+  </select>
 </mapper>
