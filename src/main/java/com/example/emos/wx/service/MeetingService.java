@@ -13,4 +13,6 @@ public interface MeetingService {
 
     public HashMap searchMeetingById(int id);
 
+    public void updateMeetingInfo(HashMap param);
+
 }

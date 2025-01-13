@@ -78,6 +78,40 @@ public class MeetingServiceImpl implements MeetingService {
         return map;
     }
 
+    @Override
+    public void updateMeetingInfo(HashMap param) {
+        int id = (int) param.get("id");
+        String date = param.get("date").toString();
+        String start = param.get("start").toString();
+        String instanceId = param.get("instanceId").toString();
+
+        //查询修改前的会议记录
+        HashMap oldMeeting = meetingDao.searchMeetingById(id);
+        String uuid = oldMeeting.get("uuid").toString();
+        Integer creatorId = Integer.parseInt(oldMeeting.get("creatorId").toString());
+
+        int row = meetingDao.updateMeetingInfo(param); //更新会议记录
+        if (row != 1) {
+            throw new EmosException("会议更新失败");
+        }
+
+        //会议更新成功之后，删除以前的工作流
+        JSONObject json = new JSONObject();
+        json.set("instanceId", instanceId);
+        json.set("reason", "会议被修改");
+        json.set("uuid",uuid);
+        json.set("code",code);
+        String url = workflow+"/workflow/deleteProcessById";
+        HttpResponse resp = HttpRequest.post(url).header("content-type", "application/json").body(json.toString()).execute();
+        if (resp.getStatus() != 200) {
+            log.error("删除工作流失败");
+            throw new EmosException("删除工作流失败");
+        }
+
+        //创建新的工作流
+        startMeetingWorkflow(uuid, creatorId, date, start);
+    }
+
     private void startMeetingWorkflow(String uuid, int creatorId, String date, String start) {
         HashMap info = userDao.searchUserInfo(creatorId); //查询创建者用户信息
 
