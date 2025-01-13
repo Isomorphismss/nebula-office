@@ -15,4 +15,6 @@ public interface MeetingService {
 
     public void updateMeetingInfo(HashMap param);
 
+    public void deleteMeetingById(int id);
+
 }

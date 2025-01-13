@@ -1,5 +1,8 @@
 package com.example.emos.wx.service.impl;
 
+import cn.hutool.core.date.DateField;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
@@ -110,6 +113,36 @@ public class MeetingServiceImpl implements MeetingService {
 
         //创建新的工作流
         startMeetingWorkflow(uuid, creatorId, date, start);
+    }
+
+    @Override
+    public void deleteMeetingById(int id) {
+        HashMap meeting = meetingDao.searchMeetingById(id); //查询会议信息
+        String uuid=meeting.get("uuid").toString();
+        String instanceId=meeting.get("instanceId").toString();
+        DateTime date = DateUtil.parse(meeting.get("date") + " " + meeting.get("start"));
+        DateTime now= DateUtil.date();
+        //会议开始前20分钟，不能删除会议
+        if(now.isAfterOrEquals(date.offset(DateField.MINUTE,-20))){
+            throw new EmosException("距离会议开始不足20分钟，不能删除会议");
+        };
+        int row = meetingDao.deleteMeetingById(id);
+        if (row != 1) {
+            throw new EmosException("会议删除失败");
+        }
+
+        //删除会议工作流
+        JSONObject json = new JSONObject();
+        json.set("instanceId", instanceId);
+        json.set("reason", "会议被取消");
+        json.set("code",code);
+        json.set("uuid",uuid);
+        String url = workflow+"/workflow/deleteProcessById";
+        HttpResponse resp = HttpRequest.post(url).header("content-type", "application/json").body(json.toString()).execute();
+        if (resp.getStatus() != 200) {
+            log.error("删除工作流失败");
+            throw new EmosException("删除工作流失败");
+        }
     }
 
     private void startMeetingWorkflow(String uuid, int creatorId, String date, String start) {
