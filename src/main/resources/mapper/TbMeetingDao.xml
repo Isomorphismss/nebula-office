@@ -86,4 +86,23 @@
            JOIN tb_user u ON JSON_CONTAINS ( m.members, CAST( u.id AS CHAR ) )
     WHERE m.id=#{id} AND u.status = 1
   </select>
+
+  <update id="updateMeetingInfo" parameterType="HashMap">
+    UPDATE tb_meeting
+    SET title = #{title},
+    date = #{date},
+    <if test="place!=null">
+      place = #{place},
+    </if>
+    <if test="place==null">
+      place = NULL,
+    </if>
+    start = #{start},
+    end = #{end},
+    type = #{type},
+    members = #{members},
+    `desc` = #{desc},
+    status=#{status}
+    WHERE id = #{id} AND status=3
+  </update>
 </mapper>
