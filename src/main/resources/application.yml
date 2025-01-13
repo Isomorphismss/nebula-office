@@ -82,6 +82,9 @@ emos:
     hr: REDACTED
   image-folder: REDACTED
   code: REDACTED
+  recievenotify: REDACTED
+workflow:
+  url: REDACTED
 
 wx:
   app-id: REDACTED
