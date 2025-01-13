@@ -7,6 +7,7 @@ import cn.hutool.json.JSONUtil;
 import com.example.emos.wx.common.util.R;
 import com.example.emos.wx.config.shiro.JwtUtil;
 import com.example.emos.wx.controller.form.InsertMeetingForm;
+import com.example.emos.wx.controller.form.SearchMeetingByIdForm;
 import com.example.emos.wx.controller.form.SearchMyMeetingListByPageForm;
 import com.example.emos.wx.db.pojo.TbMeeting;
 import com.example.emos.wx.exception.EmosException;
@@ -77,6 +78,14 @@ public class MeetingController {
 
         meetingService.insertMeeting(entity);
         return R.ok().put("result", "success");
+    }
+
+    @PostMapping("/searchMeetingById")
+    @ApiOperation("根据ID查询会议")
+    @RequiresPermissions(value = {"ROOT", "MEETING:SELECT"}, logical = Logical.OR)
+    public R searchMeetingById(@Valid @RequestBody SearchMeetingByIdForm form) {
+        HashMap map = meetingService.searchMeetingById(form.getId());
+        return R.ok().put("result", map);
     }
 
 }
