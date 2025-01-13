@@ -43,4 +43,18 @@
     ORDER BY m.date, m.start, m.id
     LIMIT #{start},#{length}
   </select>
+
+  <select id="searchMeetingMembersInSameDept" parameterType="String" resultType="boolean">
+    SELECT
+      IF(COUNT(DISTINCT u.dept_id)=1,TRUE,FALSE ) AS bool
+    FROM tb_meeting m
+           JOIN tb_user u ON JSON_CONTAINS ( m.members, CAST( u.id AS CHAR ) )
+    WHERE m.uuid=#{uuid} AND u.status = 1
+  </select>
+
+  <update id="updateMeetingInstanceId" parameterType="HashMap">
+    UPDATE tb_meeting
+    SET instance_id=#{instanceId}
+    WHERE uuid=#{uuid}
+  </update>
 </mapper>
