@@ -82,7 +82,7 @@ emos:
     hr: REDACTED
   image-folder: REDACTED
   code: REDACTED
-  recievenotify: REDACTED
+  receiveNotify: REDACTED
 workflow:
   url: REDACTED
 
