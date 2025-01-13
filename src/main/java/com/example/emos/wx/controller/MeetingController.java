@@ -9,6 +9,7 @@ import com.example.emos.wx.config.shiro.JwtUtil;
 import com.example.emos.wx.controller.form.InsertMeetingForm;
 import com.example.emos.wx.controller.form.SearchMeetingByIdForm;
 import com.example.emos.wx.controller.form.SearchMyMeetingListByPageForm;
+import com.example.emos.wx.controller.form.UpdateMeetingInfoForm;
 import com.example.emos.wx.db.pojo.TbMeeting;
 import com.example.emos.wx.exception.EmosException;
 import com.example.emos.wx.service.MeetingService;
@@ -86,6 +87,37 @@ public class MeetingController {
     public R searchMeetingById(@Valid @RequestBody SearchMeetingByIdForm form) {
         HashMap map = meetingService.searchMeetingById(form.getId());
         return R.ok().put("result", map);
+    }
+
+    @PostMapping("/updateMeetingInfo")
+    @ApiOperation("更新会议")
+    @RequiresPermissions(value = {"ROOT", "MEETING:UPDATE"}, logical = Logical.OR)
+    public R updateMeetingInfo(@Valid @RequestBody UpdateMeetingInfoForm form) {
+        if (form.getType() == 2 && (form.getPlace() == null || form.getPlace().length() == 0)) {
+            throw new EmosException("线下会议地点不能为空");
+        }
+        DateTime d1 = DateUtil.parse(form.getDate() + " " + form.getStart() + ":00");
+        DateTime d2 = DateUtil.parse(form.getDate() + " " + form.getEnd() + ":00");
+        if (d2.isBeforeOrEquals(d1)) {
+            throw new EmosException("结束时间必须大于开始时间");
+        }
+        if (!JSONUtil.isJsonArray(form.getMembers())) {
+            throw new EmosException("members不是JSON数组");
+        }
+        HashMap param = new HashMap();
+        param.put("title", form.getTitle());
+        param.put("date", form.getDate());
+        param.put("place", form.getPlace());
+        param.put("start", form.getStart() + ":00");
+        param.put("end", form.getEnd() + ":00");
+        param.put("type", form.getType());
+        param.put("members", form.getMembers());
+        param.put("desc", form.getDesc());
+        param.put("id", form.getId());
+        param.put("instanceId", form.getInstanceId());
+        param.put("status", 1);
+        meetingService.updateMeetingInfo(param);
+        return R.ok().put("result", "success");
     }
 
 }
