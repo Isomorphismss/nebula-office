@@ -11,4 +11,6 @@ public interface MeetingService {
 
     public ArrayList<HashMap> searchMyMeetingListByPage(HashMap param);
 
+    public HashMap searchMeetingById(int id);
+
 }

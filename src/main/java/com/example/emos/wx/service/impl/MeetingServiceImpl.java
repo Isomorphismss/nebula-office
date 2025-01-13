@@ -70,6 +70,14 @@ public class MeetingServiceImpl implements MeetingService {
         return resultList;
     }
 
+    @Override
+    public HashMap searchMeetingById(int id) {
+        HashMap map = meetingDao.searchMeetingById(id);
+        ArrayList<HashMap> list = meetingDao.searchMeetingMembers(id);
+        map.put("members", list);
+        return map;
+    }
+
     private void startMeetingWorkflow(String uuid, int creatorId, String date, String start) {
         HashMap info = userDao.searchUserInfo(creatorId); //查询创建者用户信息
 
