@@ -11,6 +11,7 @@ import com.example.emos.wx.db.pojo.TbMeeting;
 import com.example.emos.wx.exception.EmosException;
 import com.example.emos.wx.service.MeetingService;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 
 @RestController
 @RequestMapping("/meeting")
+@Slf4j
 public class MeetingController {
 
     @Autowired
@@ -123,6 +125,17 @@ public class MeetingController {
     public R deleteMeetingById(@Valid @RequestBody DeleteMeetingByIdForm form) {
         meetingService.deleteMeetingById(form.getId());
         return R.ok().put("result", "success");
+    }
+
+    @PostMapping("/recieveNotify")
+    @ApiOperation("接受工作流通知")
+    public R recieveNotify(@Valid @RequestBody RecieveNotifyForm form) {
+        if (form.getResult().equals("同意")) {
+            log.debug(form.getUuid() + "的会议审批通过");
+        } else {
+            log.debug(form.getUuid() + "的会议审批不通过");
+        }
+        return R.ok();
     }
 
 }
