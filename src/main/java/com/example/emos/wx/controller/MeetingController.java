@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/meeting")
@@ -143,6 +144,17 @@ public class MeetingController {
     public R searchRoomIdByUUID(@Valid @RequestBody SearchRoomIdByUUIDForm form) {
         long roomId = meetingService.searchRoomIdByUUID(form.getUuid());
         return R.ok().put("result", roomId);
+    }
+
+    @PostMapping("/searchUserMeetingInMonth")
+    @ApiOperation("查询某月用户的会议日期列表")
+    public R searchUserMeetingInMonth(@Valid @RequestBody SearchUserMeetingInMonthForm form, @RequestHeader("token") String token) {
+        int userId = jwtUtil.getUserId(token);
+        HashMap param = new HashMap();
+        param.put("userId", userId);
+        param.put("express", form.getYear()+"/"+form.getMonth());
+        List<String> list = meetingService.searchUserMeetingInMonth(param);
+        return R.ok().put("result", list);
     }
 
 }
