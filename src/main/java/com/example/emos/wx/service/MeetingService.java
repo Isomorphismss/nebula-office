@@ -17,4 +17,6 @@ public interface MeetingService {
 
     public void deleteMeetingById(int id);
 
+    public Long searchRoomIdByUUID(String uuid);
+
 }
