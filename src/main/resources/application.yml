@@ -91,6 +91,6 @@ wx:
   app-secret: REDACTED
 
 trtc:
-  appid: TRTC的AppID
+  REDACTED
   key: REDACTED
   expire: 86400
