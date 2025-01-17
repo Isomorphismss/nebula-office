@@ -110,4 +110,15 @@
     DELETE FROM tb_meeting
     WHERE id=#{id} AND status=3
   </delete>
+
+  <select id="searchUserMeetingInMonth" parameterType="Map" resultType="String">
+    SELECT
+      DISTINCT DATE_FORMAT( m.date, '%Y/%m/%d' ) AS date
+    FROM tb_meeting m
+           JOIN tb_user u ON JSON_CONTAINS ( m.members, CAST( u.id AS CHAR ) )
+    WHERE u.id = #{userId}
+      AND u.status = 1
+      AND m.status IN(3,4)
+      AND DATE_FORMAT(m.date,'%Y/%c')=#{express}
+  </select>
 </mapper>
