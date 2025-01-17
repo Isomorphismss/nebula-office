@@ -138,4 +138,11 @@ public class MeetingController {
         return R.ok();
     }
 
+    @PostMapping("/searchRoomIdByUUID")
+    @ApiOperation("查询会议房间RoomID")
+    public R searchRoomIdByUUID(@Valid @RequestBody SearchRoomIdByUUIDForm form) {
+        long roomId = meetingService.searchRoomIdByUUID(form.getUuid());
+        return R.ok().put("result", roomId);
+    }
+
 }
