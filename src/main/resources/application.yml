@@ -89,3 +89,8 @@ workflow:
 wx:
   app-id: REDACTED
   app-secret: REDACTED
+
+trtc:
+  appid: TRTC的AppID
+  key: REDACTED
+  expire: 86400
