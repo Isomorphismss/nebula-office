@@ -9,8 +9,6 @@ collaboration, and workflow automation. The backend
 is built with **Spring Boot**, 
 supporting features like facial recognition attendance, GPS location tracking, multi-user video conferencing, cloud document storage, and automated approval workflows.
 
----
-
 ## Features
 - **Facial Recognition Attendance**: Employees can check in using facial recognition, with GPS location tracking and automated email notifications to managers.
 - **Meeting Management**: Schedule and manage meetings with integrated multi-user video conferencing powered by Tencent Cloud TRTC.
@@ -18,8 +16,6 @@ supporting features like facial recognition attendance, GPS location tracking, m
 - **Online Approvals**: Automate approval workflows for expenses, purchases, and other requests using **Activiti7**.
 - **Notifications**: Send weekly reports, reminders, and timeout alerts using **Quartz** scheduling.
 - **System Notifications**: Asynchronously send announcements via **RabbitMQ** to reduce MongoDB write pressure.
-
----
 
 ## Technologies
 - **Framework**: Spring Boot
@@ -34,8 +30,6 @@ supporting features like facial recognition attendance, GPS location tracking, m
 - **Video Conferencing**: Tencent Cloud TRTC
 - **Face Recognition**: OpenCV + Flask (deployed in Docker)
 
----
-
 ## Prerequisites
 Before running the backend services, ensure the following are installed and configured:
 1. **Java**: JDK 17+ (required for the Activiti7 workflow engine).
@@ -45,8 +39,6 @@ Before running the backend services, ensure the following are installed and conf
 5. **RabbitMQ**: Message broker for asynchronous communication.
 6. **Redis**: For caching and token management.
 7. **Tencent Cloud**: For storing large files (e.g., images, documents), and for video conference.
-
----
 
 ## Getting Started
 
@@ -67,12 +59,10 @@ Before running the backend services, ensure the following are installed and conf
     - Set up a bucket and obtain access credentials.
     - Update the connection details in `application.yml`.
 
----
 
 ### Step 2: Run the Facial Recognition Service
 TODO
 
----
 
 ### Step 3: Run the Workflow Engine (Activiti7)
 1. Ensure JDK 17+ is installed.
@@ -86,7 +76,6 @@ TODO
    ```
 4. Ensure the service is running and accessible.
 
----
 
 ### Step 4: Run the Backend Services
 1. Clone the repository:
@@ -106,8 +95,6 @@ TODO
    mvn spring-boot:run
    ```
 
----
-
 ## Notes
 - Ensure all prerequisite services (**MySQL, MongoDB, RabbitMQ, Redis, Tencent Cloud Object Storage**) are running before starting the backend.
 - Make sure the required SDKs (mostly from Tencent) are placed in the correct folder.
@@ -115,7 +102,6 @@ TODO
 - The Activiti7 workflow engine requires JDK 17+ and must be running for approval workflows to function.
 - Update all connection details in `application.yml` to match your local or remote configurations.
 
----
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for details.
