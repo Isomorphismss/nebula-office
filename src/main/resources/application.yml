@@ -14,9 +14,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: REDACTED
-      username: REDACTED
-      password: REDACTED
+      url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DB_NAME}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      username: ${MYSQL_USERNAME}
+      password: ${MYSQL_PASSWORD}
       initial-size: 8
       max-active: 16
       min-idle: 8
@@ -27,8 +27,8 @@ spring:
 
   redis:
     database: 0
-    host: REDACTED
-    port: REDACTED
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
     jedis:
       pool:
         max-active: 1000
@@ -38,16 +38,16 @@ spring:
 
   data:
     mongodb:
-      host: REDACTED
-      port: REDACTED
-      database: REDACTED
+      host: ${MONGODB_HOST}
+      port: ${MONGODB_PORT}
+      database: ${MONGODB_DB_NAME}
 
   mail:
-    host: REDACTED
-    REDACTED
-    username: REDACTED
-    password: REDACTED
-    protocol: smtps
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    protocol: ${MAIL_PROTOCOL}
     properties:
       mail:
         smtp:
@@ -71,26 +71,31 @@ logging:
 
 emos:
   jwt:
-    secret: REDACTED
+    secret: ${JWT_SECRET}
     expire: 5
     cache-expire: 10
   face:
-    createFaceModelUrl: ${ENV}
-    checkinUrl: ${ENV}
+    createFaceModelUrl: ${FACE_CREATE_MODEL_URL}
+    checkinUrl: ${FACE_CHECKIN_URL}
   email:
-    system: REDACTED
-    hr: REDACTED
-  image-folder: REDACTED
-  code: REDACTED
-  receiveNotify: REDACTED
+    system: ${MAIL_USERNAME}
+    hr: ${MAIL_USERNAME}
+  image-folder: ${LOCAL_IMAGE_URL}
+  code: ${ACCESS_CODE}
+  receiveNotify: ${RECEIVE_NOTIFY}
 workflow:
-  url: REDACTED
+  url: ${WORKFLOW_URL}
 
 wx:
-  app-id: REDACTED
-  app-secret: REDACTED
+  app-id: ${QX_APP_ID}
+  app-secret: ${QX_APP_SECRET}
 
 trtc:
-  REDACTED
-  key: REDACTED
-  expire: 86400
+  appid: ${TRTC_APP_ID}
+  key: ${TRTC_KEY}
+  expire: ${TRTC_EXPIRE}
+
+rabbitmq:
+  host: ${RABBITMQ_HOST}
+  port: ${RABBITMQ_PORT}
+
